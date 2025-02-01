@@ -1,43 +1,37 @@
 CREATE TABLE user (
     id BIGINT NOT NULL, 
+    name VARCHAR(255) CHARACTER SET UTF8MB4 NOT NULL,
+    dob DATE NOT NULL,
+    gender ENUM('MALE', 'FEMALE') NOT NULL,
+    phone_number VARCHAR(15) NOT NULL,
+    address VARCHAR(255) CHARACTER SET UTF8MB4 NOT NULL,
+    identification_number VARCHAR(15) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(60) NOT NULL,
-    role ENUM('READER', 'LIBRARIAN', 'GUEST') NOT NULL,
+    role ENUM('READER', 'LIBRARIAN') NOT NULL,
     status ENUM('ACTIVE', 'INACTIVE') NOT NULL,
 
     PRIMARY KEY (id)
 );
 
 CREATE TABLE reader (
-    id BIGINT NOT NULL,
-    user_id BIGINT NOT NULL,
-    name VARCHAR(255) CHARACTER SET UTF8MB4 NOT NULL,
-    dob DATE NOT NULL,
-    gender ENUM('MALE', 'FEMALE') NOT NULL,
-    phone_number VARCHAR(15) NOT NULL UNIQUE,
-    address VARCHAR(255) CHARACTER SET UTF8MB4 NOT NULL,
-    identification_number VARCHAR(15) NOT NULL UNIQUE,
-    student_id VARCHAR(10),
+    user_id BIGINT NOT NULL UNIQUE,
+    student_id VARCHAR(10) UNIQUE,
 
-    PRIMARY KEY (id),
+    PRIMARY KEY (user_id),
     FOREIGN KEY (user_id) REFERENCES user(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE librarian (
-    id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
-    name VARCHAR(255) CHARACTER SET UTF8MB4 NOT NULL,
-    dob DATE NOT NULL,
-    gender ENUM('MALE', 'FEMALE') NOT NULL,
-    phone_number VARCHAR(15) NOT NULL UNIQUE,
-    address VARCHAR(255) CHARACTER SET UTF8MB4 NOT NULL,
-    identification_number VARCHAR(15) NOT NULL UNIQUE,
     department VARCHAR(255) CHARACTER SET UTF8MB4,
     position VARCHAR(255) CHARACTER SET UTF8MB4,
     workplace VARCHAR(255) CHARACTER SET UTF8MB4,
 
-    PRIMARY KEY (id),
+    PRIMARY KEY (user_id),
     FOREIGN KEY (user_id) REFERENCES user(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE reader_card (
@@ -50,6 +44,7 @@ CREATE TABLE reader_card (
 
     PRIMARY KEY (id),
     FOREIGN KEY (reader_id) REFERENCES reader(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE document (
@@ -78,8 +73,10 @@ CREATE TABLE document_author (
     author_id BIGINT NOT NULL,
 
     PRIMARY KEY (document_id, author_id),
-    FOREIGN KEY (document_id) REFERENCES document(id),
+    FOREIGN KEY (document_id) REFERENCES document(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (author_id) REFERENCES author(id)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE document_copy (
@@ -89,7 +86,8 @@ CREATE TABLE document_copy (
     status ENUM('AVAILABLE', 'NOT_AVAILABLE', 'BORROWED') NOT NULL,
 
     PRIMARY KEY (document_id, code),
-    FOREIGN KEY (document_id) REFERENCES document(id)    
+    FOREIGN KEY (document_id) REFERENCES document(id)
+        ON DELETE CASCADE ON UPDATE CASCADE 
 );
 
 CREATE TABLE reader_bookshelf (
@@ -97,8 +95,10 @@ CREATE TABLE reader_bookshelf (
     document_copy_code VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (reader_id, document_copy_code),
-    FOREIGN KEY (reader_id) REFERENCES reader(id),
+    FOREIGN KEY (reader_id) REFERENCES reader(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (document_copy_code) REFERENCES document_copy(code)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE reader_request (
@@ -112,7 +112,8 @@ CREATE TABLE reader_request (
     notes TEXT CHARACTER SET UTF8MB4,
 
     PRIMARY KEY (id),
-    FOREIGN KEY (reader_id) REFERENCES reader(id)
+    FOREIGN KEY (reader_id) REFERENCES reader(id) 
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE reader_request_detail (
@@ -120,7 +121,9 @@ CREATE TABLE reader_request_detail (
     document_copy_code VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (reader_request_id, document_copy_code),
-    FOREIGN KEY (reader_request_id) REFERENCES reader_request(id),
+    FOREIGN KEY (reader_request_id) REFERENCES reader_request(id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (document_copy_code) REFERENCES document_copy(code)
+        ON DELETE CASCADE ON UPDATE CASCADE
 );
 
