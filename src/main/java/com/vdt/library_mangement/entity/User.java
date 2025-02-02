@@ -13,11 +13,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.validation.constraints.Email;
 
 @Entity
 @Table(name = "user")
@@ -28,7 +27,7 @@ public class User {
 
     @Id
     @Column(name = "id")
-    private Long id;
+    private String id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -51,9 +50,10 @@ public class User {
     private String identificationNumber;
 
     @Column(name = "email", nullable = false, unique = true)
+    @Email(message = "Email should be valid")
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
     @Enumerated(EnumType.STRING)
@@ -69,14 +69,6 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Librarian librarian;
-
-    @PrePersist
-    @PreUpdate
-    private void validateUserRole() {
-        if ((reader != null && librarian != null) || (reader == null && librarian == null)) {
-            throw new IllegalStateException("User must be either a Reader or a Librarian, but not both or neither.");
-        }
-    }
 
     public enum Gender {
         MALE, FEMALE

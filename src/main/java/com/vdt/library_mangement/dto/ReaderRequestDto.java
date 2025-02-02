@@ -13,8 +13,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReaderRequestDto {
-    private Long id;
-    private Long readerId;
+    private String id;
+    private String readerId;
     private String status;
     private Date dateBorrowed;
     private Date dateDue;

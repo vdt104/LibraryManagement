@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DocumentCopyDto {
     private String code;
-    private Long documentId;
+    private String documentId;
     private String location;
     private String status;
 }

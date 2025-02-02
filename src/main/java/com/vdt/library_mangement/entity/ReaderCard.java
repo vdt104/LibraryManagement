@@ -25,7 +25,7 @@ public class ReaderCard {
 
     @Id
     @Column(name = "id")
-    private Long id;
+    private String id;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)

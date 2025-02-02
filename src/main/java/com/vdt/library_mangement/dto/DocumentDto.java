@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DocumentDto {
-    private Long id;
+    private String id;
     private String title;
     private String topic;
     private String description;
@@ -21,5 +21,5 @@ public class DocumentDto {
     private Integer yearPublished;
     private String publisher;
     private Integer quantity;
-    private Set<Long> authorIds;
+    private Set<String> authorIds;
 }

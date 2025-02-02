@@ -21,7 +21,7 @@ public class DocumentMapper {
         dto.setYearPublished(document.getYearPublished());
         dto.setPublisher(document.getPublisher());
         dto.setQuantity(document.getQuantity());
-        Set<Long> authorIds = document.getAuthors().stream()
+        Set<String> authorIds = document.getAuthors().stream()
                 .map(Author::getId)
                 .collect(Collectors.toSet());
         dto.setAuthorIds(authorIds);

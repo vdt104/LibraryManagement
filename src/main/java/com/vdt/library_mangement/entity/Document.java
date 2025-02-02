@@ -22,7 +22,7 @@ public class Document {
 
     @Id
     @Column(name = "id")
-    private Long id;
+    private String id;
 
     @Column(name = "title", nullable = false)
     private String title;

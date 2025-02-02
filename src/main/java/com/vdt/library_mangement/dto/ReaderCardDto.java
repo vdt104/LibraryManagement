@@ -12,8 +12,8 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReaderCardDto {
-    private Long id;
-    private Long readerId;
+    private String id;
+    private String readerId;
     private String pin;
     private Date issueDate;
     private Date expiryDate;

@@ -28,7 +28,7 @@ public class ReaderRequest {
 
     @Id
     @Column(name = "id")
-    private Long id;
+    private String id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
