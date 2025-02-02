@@ -1,7 +1,20 @@
 package com.vdt.library_mangement.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.Set;
@@ -9,6 +22,8 @@ import java.util.Set;
 @Entity
 @Table(name = "reader_request")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReaderRequest {
 
     @Id
@@ -16,7 +31,7 @@ public class ReaderRequest {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "reader_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private Reader reader;
 
     @Enumerated(EnumType.STRING)

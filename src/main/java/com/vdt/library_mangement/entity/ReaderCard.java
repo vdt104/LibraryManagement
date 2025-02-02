@@ -1,13 +1,26 @@
 package com.vdt.library_mangement.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "reader_card")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ReaderCard {
 
     @Id
@@ -15,7 +28,7 @@ public class ReaderCard {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "reader_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private Reader reader;
 
     @Column(name = "pin", nullable = false)
