@@ -21,14 +21,16 @@ public class ReaderMapper {
         dto.setAddress(reader.getUser().getAddress());
         dto.setIdentificationNumber(reader.getUser().getIdentificationNumber());
         dto.setEmail(reader.getUser().getEmail());
-        dto.setPassword(reader.getUser().getPassword());
         dto.setRole(reader.getUser().getRole().name());
         dto.setStatus(reader.getUser().getStatus().name());
         dto.setStudentId(reader.getStudentId());
-        Set<String> documentCopyCodes = reader.getDocumentCopies().stream()
-                .map(DocumentCopy::getCode)
-                .collect(Collectors.toSet());
-        dto.setDocumentCopyCodes(documentCopyCodes);
+
+        if (reader.getDocumentCopies() != null) {
+            Set<String> documentCopyCodes = reader.getDocumentCopies().stream()
+                    .map(DocumentCopy::getCode)
+                    .collect(Collectors.toSet());
+            dto.setDocumentCopyCodes(documentCopyCodes);
+        }
 
         return dto;
     }
@@ -47,7 +49,6 @@ public class ReaderMapper {
         user.setAddress(dto.getAddress());
         user.setIdentificationNumber(dto.getIdentificationNumber());
         user.setEmail(dto.getEmail());
-        user.setPassword(dto.getPassword());
         if (dto.getRole() != null) {
             user.setRole(User.Role.valueOf(dto.getRole()));
         }
@@ -58,7 +59,7 @@ public class ReaderMapper {
         reader.setUser(user);
         reader.setUserId(dto.getId());
         reader.setStudentId(dto.getStudentId());
-        
+
         return reader;
     }
 }
