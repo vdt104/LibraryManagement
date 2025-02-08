@@ -4,19 +4,18 @@ import com.vdt.library_mangement.dto.ReaderDto;
 import com.vdt.library_mangement.service.ReaderService;
 
 import jakarta.validation.Valid;
-import lombok.AllArgsConstructor;
-
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/readers")
-@AllArgsConstructor
+@RequestMapping("${api.prefix}/readers")
+@RequiredArgsConstructor
 public class ReaderController {
 
-    private ReaderService readerService;
+    private final ReaderService readerService;
 
     @PostMapping
     public ResponseEntity<ReaderDto> createReader(@Valid @RequestBody ReaderDto readerDto) {

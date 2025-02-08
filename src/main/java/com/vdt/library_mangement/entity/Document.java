@@ -33,9 +33,7 @@ public class Document {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @ManyToOne
-    @JoinColumn(name = "topic_code", nullable = false)
-    private Topic topic;
+    private String topic;
 
     @Column(name = "description")
     private String description;
@@ -43,8 +41,9 @@ public class Document {
     @Column(name = "note")
     private String note;
 
-    @Column(name = "category")
-    private String category;
+    @ManyToOne
+    @JoinColumn(name = "category", nullable = false)
+    private Category category;
 
     @Column(name = "year_published")
     private Integer yearPublished;
@@ -52,7 +51,7 @@ public class Document {
     @Column(name = "publisher")
     private String publisher;
 
-    @Column(name = "quantity", nullable = false)
+    @Column(name = "quantity", nullable = true)
     private Integer quantity;
 
     @ManyToMany

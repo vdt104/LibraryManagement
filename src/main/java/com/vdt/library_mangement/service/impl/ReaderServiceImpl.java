@@ -1,6 +1,6 @@
 package com.vdt.library_mangement.service.impl;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 
@@ -11,13 +11,13 @@ import com.vdt.library_mangement.dto.ReaderDto;
 import com.vdt.library_mangement.entity.Reader;
 import com.vdt.library_mangement.entity.Role;
 import com.vdt.library_mangement.entity.User;
-import com.vdt.library_mangement.exception.EmailAlreadyExistsException;
+import com.vdt.library_mangement.exception.ResourceAlreadyExistsException;
 import com.vdt.library_mangement.repository.ReaderRepository;
 import com.vdt.library_mangement.repository.UserRepository;
 import com.vdt.library_mangement.service.ReaderService;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ReaderServiceImpl implements ReaderService {
 
     private final ReaderRepository readerRepository;
@@ -31,7 +31,7 @@ public class ReaderServiceImpl implements ReaderService {
         Optional<User> existingUser = userRepository.findByEmail(readerDto.getEmail());
 
         if (existingUser.isPresent()) {
-            throw new EmailAlreadyExistsException("Email already exists");
+            throw new ResourceAlreadyExistsException("Email already exists");
         }
 
         User user = modelMapper.map(readerDto, User.class);

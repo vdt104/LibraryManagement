@@ -1,12 +1,8 @@
 package com.vdt.library_mangement.config;
 
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import com.vdt.library_mangement.dto.ReaderDto;
-import com.vdt.library_mangement.entity.Reader;
 
 @Configuration
 public class ModelMapperConfig {

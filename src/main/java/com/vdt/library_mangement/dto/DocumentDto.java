@@ -1,11 +1,12 @@
 package com.vdt.library_mangement.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,4 +32,6 @@ public class DocumentDto {
     private String publisher;
 
     private Integer quantity;
+
+    private List<AuthorDto> authors;
 }
