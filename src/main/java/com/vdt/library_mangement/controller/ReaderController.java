@@ -23,4 +23,11 @@ public class ReaderController {
         ReaderDto createdReader = readerService.createReader(readerDto);
         return new ResponseEntity<>(createdReader, HttpStatus.CREATED);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ReaderDto> updateReader(@PathVariable String id, @RequestBody ReaderDto readerDto) {
+
+        ReaderDto updatedReader = readerService.updateReader(id, readerDto);
+        return new ResponseEntity<>(updatedReader, HttpStatus.OK);
+    }
 }

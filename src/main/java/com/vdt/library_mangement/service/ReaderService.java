@@ -4,4 +4,6 @@ import com.vdt.library_mangement.dto.ReaderDto;
 
 public interface ReaderService {
     ReaderDto createReader(ReaderDto readerDto);
+
+    ReaderDto updateReader(String userId, ReaderDto readerDto);
 }

@@ -47,6 +47,7 @@ public class UserDto {
     @JsonIgnore
     private Long roleId;
 
+    @JsonProperty("is_active")
     @JsonIgnore
-    private String status;
+    private boolean isActive;
 }
