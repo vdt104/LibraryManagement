@@ -2,6 +2,7 @@ package com.vdt.library_mangement.dto;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
@@ -35,13 +36,17 @@ public class UserDto {
     @NotBlank(message = "Email is required")
     private String email;
 
+    @JsonIgnore
     private String password;
 
     @JsonProperty("retype_password")
+    @JsonIgnore
     private String retypePassword;
 
     @JsonProperty("role_id")
+    @JsonIgnore
     private Long roleId;
 
+    @JsonIgnore
     private String status;
 }

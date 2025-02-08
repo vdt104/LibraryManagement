@@ -1,7 +1,6 @@
 package com.vdt.library_mangement.controller;
 
 import com.vdt.library_mangement.dto.ReaderDto;
-import com.vdt.library_mangement.response.ReaderResponse;
 import com.vdt.library_mangement.service.ReaderService;
 
 import jakarta.validation.Valid;
@@ -20,9 +19,9 @@ public class ReaderController {
     private ReaderService readerService;
 
     @PostMapping
-    public ResponseEntity<ReaderResponse> createReader(@Valid @RequestBody ReaderDto readerDto) {
+    public ResponseEntity<ReaderDto> createReader(@Valid @RequestBody ReaderDto readerDto) {
 
-        ReaderResponse createdReader = readerService.createReader(readerDto);
+        ReaderDto createdReader = readerService.createReader(readerDto);
         return new ResponseEntity<>(createdReader, HttpStatus.CREATED);
     }
 }

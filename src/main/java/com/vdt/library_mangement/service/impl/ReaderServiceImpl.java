@@ -13,7 +13,6 @@ import com.vdt.library_mangement.entity.User;
 import com.vdt.library_mangement.exception.EmailAlreadyExistsException;
 import com.vdt.library_mangement.repository.ReaderRepository;
 import com.vdt.library_mangement.repository.UserRepository;
-import com.vdt.library_mangement.response.ReaderResponse;
 import com.vdt.library_mangement.service.ReaderService;
 
 @Service
@@ -25,7 +24,7 @@ public class ReaderServiceImpl implements ReaderService {
     private final UserRepository userRepository;
 
     @Override
-    public ReaderResponse createReader(ReaderDto readerDto) {
+    public ReaderDto createReader(ReaderDto readerDto) {
         Optional<User> existingUser = userRepository.findByEmail(readerDto.getEmail());
 
         if (existingUser.isPresent()) {
@@ -64,7 +63,7 @@ public class ReaderServiceImpl implements ReaderService {
 
         Reader savedReader = readerRepository.save(reader);
 
-        ReaderResponse savedReaderResponse = new ReaderResponse();
+        ReaderDto savedReaderResponse = new ReaderDto();
         savedReaderResponse.setFullName(savedReader.getUser().getFullName());
         savedReaderResponse.setDob(savedReader.getUser().getDob());
         savedReaderResponse.setGender(savedReader.getUser().getGender().toString());
