@@ -10,21 +10,25 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "reader_card")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ReaderCard {
+public class ReaderCard extends BaseEntity {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @OneToOne
@@ -47,6 +51,6 @@ public class ReaderCard {
     private Status status;
 
     public enum Status {
-        REQUESTED, ACTIVE, EXPIRED, REQUEST_EXTEND
+        REQUESTED, ACTIVE, REQUEST_EXTEND, EXPIRED
     }
 }

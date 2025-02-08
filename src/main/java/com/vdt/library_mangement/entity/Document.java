@@ -2,10 +2,13 @@ package com.vdt.library_mangement.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,14 +24,18 @@ import java.util.Set;
 public class Document {
 
     @Id
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+
+    @Column(name = "document_code", nullable = false, unique = true)
+    private String documentCode;
 
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "topic")
-    private String topic;
+    @ManyToOne
+    @JoinColumn(name = "topic_code", nullable = false)
+    private Topic topic;
 
     @Column(name = "description")
     private String description;

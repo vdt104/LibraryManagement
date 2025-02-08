@@ -20,11 +20,11 @@ import lombok.NoArgsConstructor;
 public class DocumentCopy {
 
     @Id
-    @Column(name = "code", nullable = false, unique = true)
-    private String code;
+    @Column(name = "document_copy_code", nullable = false, unique = true)
+    private String documentCopyCode;
 
     @ManyToOne
-    @JoinColumn(name = "document_id", nullable = false)
+    @JoinColumn(name = "document_code", nullable = false)
     private Document document;
 
     @Column(nullable = false)

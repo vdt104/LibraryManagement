@@ -22,14 +22,14 @@ public class LibrarianController {
     private final LibrarianService librarianService;
     private final UserRepository userRepository;
 
-    @PostMapping
-    public ResponseEntity<LibrarianDto> createLibrarian(@RequestBody LibrarianDto librarianDto) {
-        Optional<User> existingUser = userRepository.findByEmail(librarianDto.getEmail());
-        if (existingUser.isPresent()) {
-            throw new EmailAlreadyExistsException("Email already exists");
-        }
+    // @PostMapping
+    // public ResponseEntity<LibrarianDto> createLibrarian(@RequestBody LibrarianDto librarianDto) {
+    //     Optional<User> existingUser = userRepository.findByEmail(librarianDto.getEmail());
+    //     if (existingUser.isPresent()) {
+    //         throw new EmailAlreadyExistsException("Email already exists");
+    //     }
 
-        LibrarianDto createdLibrarian = librarianService.createLibrarian(librarianDto);
-        return new ResponseEntity<>(createdLibrarian, HttpStatus.CREATED);
-    }
+    //     LibrarianDto createdLibrarian = librarianService.createLibrarian(librarianDto);
+    //     return new ResponseEntity<>(createdLibrarian, HttpStatus.CREATED);
+    // }
 }

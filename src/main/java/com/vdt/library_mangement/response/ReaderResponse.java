@@ -1,20 +1,18 @@
-package com.vdt.library_mangement.dto;
+package com.vdt.library_mangement.response;
 
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+@NoArgsConstructor
+@Builder
+public class ReaderResponse {
 
     @JsonProperty("full_name")
     private String fullName;
@@ -35,13 +33,6 @@ public class UserDto {
     @NotBlank(message = "Email is required")
     private String email;
 
-    private String password;
-
-    @JsonProperty("retype_password")
-    private String retypePassword;
-
-    @JsonProperty("role_id")
-    private Long roleId;
-
-    private String status;
+    @JsonProperty("student_id")
+    private String studentId;
 }
