@@ -24,7 +24,7 @@ public class DocumentCopy {
     private String documentCopyCode;
 
     @ManyToOne
-    @JoinColumn(name = "document_code", nullable = false)
+    @JoinColumn(name = "document_id", nullable = false)
     private Document document;
 
     @Column(nullable = false)
