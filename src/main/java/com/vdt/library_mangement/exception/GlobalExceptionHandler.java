@@ -33,14 +33,27 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ResourceAlreadyExistsException.class)
-    public ResponseEntity<ErrorDetails> handleEmailAlreadyExistsException(ResourceAlreadyExistsException exception,
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorDetails> handleEmailAlreadyExistsException(EmailAlreadyExistsException exception,
                                                                           WebRequest webRequest) {
         ErrorDetails errorDetails = new ErrorDetails(
                 LocalDateTime.now(),
                 exception.getMessage(),
                 webRequest.getDescription(false),
                 "EMAIL_ALREADY_EXISTS"
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DocumentCodeAlreadyExistsException.class)
+    public ResponseEntity<ErrorDetails> handleDocumentCodeAlreadyExistsException(DocumentCodeAlreadyExistsException exception,
+                                                                                 WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                "DOCUMENT_CODE_ALREADY_EXISTS"
         );
 
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);

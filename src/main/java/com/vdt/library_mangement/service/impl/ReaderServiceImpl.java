@@ -5,13 +5,13 @@ import lombok.RequiredArgsConstructor;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
-import org.modelmapper.ModelMapper;
 
 import com.vdt.library_mangement.dto.ReaderDto;
 import com.vdt.library_mangement.entity.Reader;
 import com.vdt.library_mangement.entity.Role;
 import com.vdt.library_mangement.entity.User;
-import com.vdt.library_mangement.exception.ResourceAlreadyExistsException;
+import com.vdt.library_mangement.exception.EmailAlreadyExistsException;
+import com.vdt.library_mangement.mapper.ReaderMapper;
 import com.vdt.library_mangement.repository.ReaderRepository;
 import com.vdt.library_mangement.repository.UserRepository;
 import com.vdt.library_mangement.service.ReaderService;
@@ -24,42 +24,29 @@ public class ReaderServiceImpl implements ReaderService {
 
     private final UserRepository userRepository;
 
-    private final ModelMapper modelMapper;
-
     @Override
     public ReaderDto createReader(ReaderDto readerDto) {
         Optional<User> existingUser = userRepository.findByEmail(readerDto.getEmail());
 
         if (existingUser.isPresent()) {
-            throw new ResourceAlreadyExistsException("Email already exists");
+            throw new EmailAlreadyExistsException("Email already exists");
         }
 
-        User user = modelMapper.map(readerDto, User.class);
-        // user.setGender(User.Gender.valueOf(readerDto.getGender().toString()));
+        Reader reader = ReaderMapper.toEntity(readerDto);
+
+        User user = reader.getUser();
         user.setActive(false);
 
         Role role = Role.builder()
             .id(2L)
             .build();
+        
         user.setRole(role);
 
-        Reader reader = Reader.builder()
-            .user(user)
-            .studentId(readerDto.getStudentId())
-            .build();
+        reader.setUser(user);
 
         Reader savedReader = readerRepository.save(reader);
 
-        ReaderDto savedReaderDto = new ReaderDto();
-        savedReaderDto.setFullName(savedReader.getUser().getFullName());
-        savedReaderDto.setDob(savedReader.getUser().getDob());
-        savedReaderDto.setGender(savedReader.getUser().getGender().toString());
-        savedReaderDto.setPhoneNumber(savedReader.getUser().getPhoneNumber());
-        savedReaderDto.setAddress(savedReader.getUser().getAddress());
-        savedReaderDto.setIdentificationNumber(savedReader.getUser().getIdentificationNumber());
-        savedReaderDto.setEmail(savedReader.getUser().getEmail());
-        savedReaderDto.setStudentId(savedReader.getStudentId());
-    
-        return savedReaderDto;
+        return ReaderMapper.toDTO(savedReader);
     }
 }

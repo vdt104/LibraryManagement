@@ -2,11 +2,8 @@ package com.vdt.library_mangement.mapper;
 
 import com.vdt.library_mangement.dto.DocumentDto;
 import com.vdt.library_mangement.entity.Document;
-import com.vdt.library_mangement.entity.Category;
 import com.vdt.library_mangement.dto.AuthorDto;
-import com.vdt.library_mangement.entity.Author;
 
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DocumentMapper {
@@ -29,7 +26,7 @@ public class DocumentMapper {
         return documentDto;
     }
 
-    public static Document toEntity(DocumentDto documentDto, Category category, Set<Author> authors) {
+    public static Document toEntity(DocumentDto documentDto) {
         Document document = new Document();
 
         document.setDocumentCode(documentDto.getDocumentCode());
@@ -37,11 +34,9 @@ public class DocumentMapper {
         document.setTopic(documentDto.getTopic());
         document.setDescription(documentDto.getDescription());
         document.setNote(documentDto.getNote());
-        document.setCategory(category);
         document.setYearPublished(documentDto.getYearPublished());
         document.setPublisher(documentDto.getPublisher());
         document.setQuantity(documentDto.getQuantity());
-        document.setAuthors(authors);
 
         return document;
     }

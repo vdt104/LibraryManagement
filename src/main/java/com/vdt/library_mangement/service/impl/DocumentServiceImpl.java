@@ -11,7 +11,7 @@ import com.vdt.library_mangement.dto.DocumentDto;
 import com.vdt.library_mangement.entity.Author;
 import com.vdt.library_mangement.entity.Category;
 import com.vdt.library_mangement.entity.Document;
-import com.vdt.library_mangement.exception.ResourceAlreadyExistsException;
+import com.vdt.library_mangement.exception.DocumentCodeAlreadyExistsException;
 import com.vdt.library_mangement.mapper.DocumentMapper;
 import com.vdt.library_mangement.repository.AuthorRepository;
 import com.vdt.library_mangement.repository.CategoryRepository;
@@ -32,7 +32,7 @@ public class DocumentServiceImpl implements DocumentService {
         Optional<Document> existingDocument = documentRepository.findByDocumentCode(documentDto.getDocumentCode());
 
         if (existingDocument.isPresent()) {
-            throw new ResourceAlreadyExistsException("Document code already exists");
+            throw new DocumentCodeAlreadyExistsException("Document code already exists");
         }
 
         // Find the category by name
@@ -59,7 +59,9 @@ public class DocumentServiceImpl implements DocumentService {
                 .collect(Collectors.toSet());
         }
 
-        Document document = DocumentMapper.toEntity(documentDto, category, authors);
+        Document document = DocumentMapper.toEntity(documentDto);
+        document.setCategory(category);
+        document.setAuthors(authors);
         document.setQuantity(0);
         Document savedDocument = documentRepository.save(document);
 
