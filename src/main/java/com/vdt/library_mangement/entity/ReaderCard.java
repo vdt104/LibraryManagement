@@ -52,6 +52,6 @@ public class ReaderCard extends BaseEntity {
     private Status status;
 
     public enum Status {
-        REQUESTED, ACTIVE, REQUEST_EXTEND, EXPIRED
+        REQUESTED, ACTIVE, REQUEST_EXTEND, EXPIRED, INACTIVE
     }
 }

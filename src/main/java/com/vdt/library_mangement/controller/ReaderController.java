@@ -6,6 +6,8 @@ import com.vdt.library_mangement.service.ReaderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +32,10 @@ public class ReaderController {
         return new ResponseEntity<>(updatedReader, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/activate")
-    public ResponseEntity<ReaderDto> activateReader(@PathVariable String id) {
-
-        ReaderDto activatedReader = readerService.activateReader(id);
-        return new ResponseEntity<>(activatedReader, HttpStatus.OK);
+    @PutMapping("/{id}/is_active")
+    public ResponseEntity<ReaderDto> activateReader(@PathVariable String id, @RequestBody Map<String, Boolean> isActiveMap) {
+        boolean isActive = isActiveMap.get("is_active");
+        ReaderDto reader = readerService.changeReaderStatus(id, isActive);
+        return new ResponseEntity<>(reader, HttpStatus.OK);
     }
 }

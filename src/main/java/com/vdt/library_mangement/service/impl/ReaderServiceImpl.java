@@ -2,8 +2,11 @@ package com.vdt.library_mangement.service.impl;
 
 import lombok.RequiredArgsConstructor;
 
+import java.security.SecureRandom;
+import java.util.Date;
 import java.util.Optional;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.vdt.library_mangement.dto.ReaderDto;
@@ -28,6 +31,9 @@ public class ReaderServiceImpl implements ReaderService {
     private final UserRepository userRepository;
 
     private final ReaderCardRepository readerCardRepository;
+
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
 
     @Override
     public ReaderDto createReader(ReaderDto readerDto, int expiryPeriod) {
@@ -93,17 +99,48 @@ public class ReaderServiceImpl implements ReaderService {
     }
 
     @Override
-    public ReaderDto activateReader(String userId) {
+    public ReaderDto changeReaderStatus(String userId, boolean isActive) {
         Reader existingReader = readerRepository.findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("Reader", "id", userId));
 
         User user = existingReader.getUser();
-        user.setActive(true);
+        user.setActive(isActive);
+
+        if (isActive) {
+
+            // Cập nhật ReaderCard
+            ReaderCard readerCard = existingReader.getReaderCard();
+
+            if (readerCard.getCreatedAt().equals(readerCard.getUpdatedAt())) {
+                // Tạo mã PIN 6 số ngẫu nhiên
+                String pin = generateRandomPin();
+                System.out.println("Generated PIN: " + pin);
+                String encodedPin = passwordEncoder.encode(pin);
+
+                readerCard.setPin(encodedPin);
+                readerCard.setIssueDate(new Date());
+            }
+            readerCard.setIssueDate(new Date());
+            readerCard.setStatus(ReaderCard.Status.ACTIVE);
+
+            existingReader.setReaderCard(readerCard);
+        } else {
+            ReaderCard readerCard = existingReader.getReaderCard();
+            
+            readerCard.setStatus(ReaderCard.Status.INACTIVE);
+            existingReader.setReaderCard(readerCard);
+        }
 
         existingReader.setUser(user);
 
-        Reader activatedReader = readerRepository.save(existingReader);
+        Reader updatedReader = readerRepository.save(existingReader);
 
-        return ReaderMapper.toDTO(activatedReader);
+        return ReaderMapper.toDTO(updatedReader);
+    }
+
+    private String generateRandomPin() {
+        SecureRandom random = new SecureRandom();
+        int pin = 100000 + random.nextInt(900000);
+        return String.valueOf(pin);
     }
 }
