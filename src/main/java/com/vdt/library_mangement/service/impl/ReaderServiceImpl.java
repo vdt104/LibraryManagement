@@ -20,6 +20,7 @@ import com.vdt.library_mangement.mapper.ReaderMapper;
 import com.vdt.library_mangement.repository.ReaderCardRepository;
 import com.vdt.library_mangement.repository.ReaderRepository;
 import com.vdt.library_mangement.repository.UserRepository;
+import com.vdt.library_mangement.response.UserResponse;
 import com.vdt.library_mangement.service.ReaderService;
 
 @Service
@@ -98,40 +99,105 @@ public class ReaderServiceImpl implements ReaderService {
         return ReaderMapper.toDTO(updatedReader);
     }
 
+    // @Override
+    // public ReaderDto changeReaderStatus(String userId, boolean isActive) {
+    //     Reader existingReader = readerRepository.findById(userId)
+    //         .orElseThrow(() -> new ResourceNotFoundException("Reader", "id", userId));
+
+    //     User user = existingReader.getUser();
+    //     user.setActive(isActive);
+
+    //     if (isActive) {
+
+    //         // Cập nhật ReaderCard
+    //         ReaderCard readerCard = existingReader.getReaderCard();
+
+    //         if (readerCard.getCreatedAt().equals(readerCard.getUpdatedAt())) {
+    //             // Tạo mã PIN 6 số ngẫu nhiên
+    //             String pin = generateRandomPin();
+    //             System.out.println("Generated PIN: " + pin);
+    //             String encodedPin = passwordEncoder.encode(pin);
+
+    //             String password = generateRandomPassword();
+    //             System.out.println("Generated password: " + password);
+    //             String encodedPassword = passwordEncoder.encode(password);
+
+    //             user.setPassword(encodedPassword);
+
+    //             readerCard.setPin(encodedPin);
+    //             readerCard.setIssueDate(new Date());
+    //         }
+    //         readerCard.setIssueDate(new Date());
+    //         readerCard.setStatus(ReaderCard.Status.ACTIVE);
+
+    //         existingReader.setReaderCard(readerCard);
+    //     } else {
+    //         ReaderCard readerCard = existingReader.getReaderCard();
+            
+    //         readerCard.setStatus(ReaderCard.Status.INACTIVE);
+    //         existingReader.setReaderCard(readerCard);
+    //     }
+
+    //     existingReader.setUser(user);
+
+    //     Reader updatedReader = readerRepository.save(existingReader);
+
+    //     return ReaderMapper.toDTO(updatedReader);
+    // }
+
     @Override
-    public ReaderDto changeReaderStatus(String userId, boolean isActive) {
+    public UserResponse activateReader(String userId) {
         Reader existingReader = readerRepository.findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("Reader", "id", userId));
 
         User user = existingReader.getUser();
-        user.setActive(isActive);
+        user.setActive(true);
 
-        if (isActive) {
+        // Cập nhật ReaderCard
+        ReaderCard readerCard = existingReader.getReaderCard();
 
-            // Cập nhật ReaderCard
-            ReaderCard readerCard = existingReader.getReaderCard();
+        String pin = null;
+        String password = null;
 
-            if (readerCard.getCreatedAt().equals(readerCard.getUpdatedAt())) {
-                // Tạo mã PIN 6 số ngẫu nhiên
-                String pin = generateRandomPin();
-                System.out.println("Generated PIN: " + pin);
-                String encodedPin = passwordEncoder.encode(pin);
+        if (readerCard.getCreatedAt().equals(readerCard.getUpdatedAt())) {
+            // Tạo mã PIN 6 số ngẫu nhiên
+            pin = generateRandomPin();
+            System.out.println("Generated PIN: " + pin);
+            String encodedPin = passwordEncoder.encode(pin);
 
-                readerCard.setPin(encodedPin);
-                readerCard.setIssueDate(new Date());
-            }
+            password = generateRandomPassword();
+            System.out.println("Generated password: " + password);
+            String encodedPassword = passwordEncoder.encode(password);
+
+            user.setPassword(encodedPassword);
+
+            readerCard.setPin(encodedPin);
             readerCard.setIssueDate(new Date());
-            readerCard.setStatus(ReaderCard.Status.ACTIVE);
-
-            existingReader.setReaderCard(readerCard);
-        } else {
-            ReaderCard readerCard = existingReader.getReaderCard();
-            
-            readerCard.setStatus(ReaderCard.Status.INACTIVE);
-            existingReader.setReaderCard(readerCard);
         }
+        readerCard.setIssueDate(new Date());
+        readerCard.setStatus(ReaderCard.Status.ACTIVE);
+
+        existingReader.setReaderCard(readerCard);
 
         existingReader.setUser(user);
+
+        readerRepository.save(existingReader);
+
+        return UserResponse.builder()
+            .password(password)
+            .pin(pin)
+            .build();
+    }
+
+    @Override
+    public ReaderDto deactivateReader(String userId) {
+        Reader existingReader = readerRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("Reader", "id", userId));
+
+        ReaderCard readerCard = existingReader.getReaderCard();
+        
+        readerCard.setStatus(ReaderCard.Status.INACTIVE);
+        existingReader.setReaderCard(readerCard);
 
         Reader updatedReader = readerRepository.save(existingReader);
 
@@ -142,5 +208,33 @@ public class ReaderServiceImpl implements ReaderService {
         SecureRandom random = new SecureRandom();
         int pin = 100000 + random.nextInt(900000);
         return String.valueOf(pin);
+    }
+
+    private String generateRandomPassword() {
+        SecureRandom random = new SecureRandom();
+        String upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
+        String numbers = "0123456789";
+        String specialCharacters = "!@#$%^&*()-_+=<>?";
+
+        String allCharacters = upperCaseLetters + lowerCaseLetters + numbers + specialCharacters;
+        StringBuilder password = new StringBuilder();
+
+        // Đảm bảo có ít nhất 1 ký tự viết hoa
+        password.append(upperCaseLetters.charAt(random.nextInt(upperCaseLetters.length())));
+        // Đảm bảo có ít nhất 1 ký tự viết thường
+        password.append(lowerCaseLetters.charAt(random.nextInt(lowerCaseLetters.length())));
+        // Đảm bảo có ít nhất 1 số
+        password.append(numbers.charAt(random.nextInt(numbers.length())));
+        // Đảm bảo có ít nhất 1 ký tự đặc biệt
+        password.append(specialCharacters.charAt(random.nextInt(specialCharacters.length())));
+
+        // Thêm các ký tự ngẫu nhiên còn lại để đạt độ dài tối thiểu là 6
+        for (int i = 4; i < 6; i++) {
+            password.append(allCharacters.charAt(random.nextInt(allCharacters.length())));
+        }
+
+        // Trộn các ký tự để tạo mật khẩu ngẫu nhiên
+        return password.toString();
     }
 }

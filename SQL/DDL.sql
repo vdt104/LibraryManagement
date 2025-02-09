@@ -52,12 +52,12 @@ CREATE TABLE document (
 
 CREATE TABLE document_copy (
     document_copy_code VARCHAR(255),
-    document_code CHAR(36) NOT NULL,
+    document_id CHAR(36) NOT NULL,
     location VARCHAR(255) NOT NULL,
     status ENUM('AVAILABLE', 'NOT_AVAILABLE', 'BORROWED') NOT NULL,
 
     PRIMARY KEY (document_copy_code),
-    FOREIGN KEY (document_code) REFERENCES document(id)
+    FOREIGN KEY (document_id) REFERENCES document(id)
 );
 
 CREATE TABLE librarian (
@@ -81,10 +81,10 @@ CREATE TABLE reader (
 CREATE TABLE reader_card (
     id CHAR(36),
     user_id CHAR(36) NOT NULL,
-    pin VARCHAR(255) NOT NULL,
+    pin VARCHAR(255),
     issue_date DATE,
     expiry_period INT,
-    status ENUM('REQUESTED', 'ACTIVE', 'REQUEST_EXTEND', 'EXPIRED') NOT NULL,
+    status ENUM('REQUESTED', 'ACTIVE', 'REQUEST_EXTEND', 'EXPIRED', 'INACTIVE') NOT NULL,
     created_at DATETIME,
     updated_at DATETIME,
 
