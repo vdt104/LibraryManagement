@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.vdt.library_mangement.dto.ReaderDto;
 import com.vdt.library_mangement.entity.Reader;
+import com.vdt.library_mangement.entity.ReaderCard;
 import com.vdt.library_mangement.entity.Role;
 import com.vdt.library_mangement.entity.User;
 import com.vdt.library_mangement.exception.EmailAlreadyExistsException;
 import com.vdt.library_mangement.exception.ResourceNotFoundException;
 import com.vdt.library_mangement.mapper.ReaderMapper;
+import com.vdt.library_mangement.repository.ReaderCardRepository;
 import com.vdt.library_mangement.repository.ReaderRepository;
 import com.vdt.library_mangement.repository.UserRepository;
 import com.vdt.library_mangement.service.ReaderService;
@@ -25,8 +27,10 @@ public class ReaderServiceImpl implements ReaderService {
 
     private final UserRepository userRepository;
 
+    private final ReaderCardRepository readerCardRepository;
+
     @Override
-    public ReaderDto createReader(ReaderDto readerDto) {
+    public ReaderDto createReader(ReaderDto readerDto, int expiryPeriod) {
         Optional<User> existingUser = userRepository.findByEmail(readerDto.getEmail());
 
         if (existingUser.isPresent()) {
@@ -46,6 +50,14 @@ public class ReaderServiceImpl implements ReaderService {
 
         Reader savedReader = readerRepository.save(reader);
 
+        ReaderCard readerCard = ReaderCard.builder()
+            .reader(savedReader)
+            .expiryPeriod(expiryPeriod)
+            .status(ReaderCard.Status.REQUESTED)
+            .build();
+
+        readerCardRepository.save(readerCard);
+
         return ReaderMapper.toDTO(savedReader);
     }
 
@@ -64,7 +76,7 @@ public class ReaderServiceImpl implements ReaderService {
                 throw new EmailAlreadyExistsException("Email already exists");
             }
         }
-        
+
         user.setFullName(readerDto.getFullName());
         user.setDob(readerDto.getDob());
         user.setGender(User.Gender.valueOf(readerDto.getGender())); 
@@ -78,5 +90,20 @@ public class ReaderServiceImpl implements ReaderService {
         Reader updatedReader = readerRepository.save(existingReader);
 
         return ReaderMapper.toDTO(updatedReader);
+    }
+
+    @Override
+    public ReaderDto activateReader(String userId) {
+        Reader existingReader = readerRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("Reader", "id", userId));
+
+        User user = existingReader.getUser();
+        user.setActive(true);
+
+        existingReader.setUser(user);
+
+        Reader activatedReader = readerRepository.save(existingReader);
+
+        return ReaderMapper.toDTO(activatedReader);
     }
 }

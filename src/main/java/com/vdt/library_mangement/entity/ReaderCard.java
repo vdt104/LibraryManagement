@@ -13,6 +13,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +26,7 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ReaderCard extends BaseEntity {
 
     @Id
@@ -35,16 +37,15 @@ public class ReaderCard extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private Reader reader;
 
-    @Column(name = "pin", nullable = false)
+    @Column(name = "pin")
     private String pin;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "issue_date", nullable = false)
+    @Column(name = "issue_date")
     private Date issueDate;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "expiry_date", nullable = false)
-    private Date expiryDate;
+    @Column(name = "expiry_period")
+    private int expiryPeriod;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)

@@ -18,9 +18,8 @@ public class ReaderController {
     private final ReaderService readerService;
 
     @PostMapping
-    public ResponseEntity<ReaderDto> createReader(@Valid @RequestBody ReaderDto readerDto) {
-
-        ReaderDto createdReader = readerService.createReader(readerDto);
+    public ResponseEntity<ReaderDto> createReader(@Valid @RequestBody ReaderDto readerDto, @RequestParam(name = "expiry_period") int expiryPeriod) {
+        ReaderDto createdReader = readerService.createReader(readerDto, expiryPeriod);
         return new ResponseEntity<>(createdReader, HttpStatus.CREATED);
     }
 
@@ -29,5 +28,12 @@ public class ReaderController {
 
         ReaderDto updatedReader = readerService.updateReader(id, readerDto);
         return new ResponseEntity<>(updatedReader, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}/activate")
+    public ResponseEntity<ReaderDto> activateReader(@PathVariable String id) {
+
+        ReaderDto activatedReader = readerService.activateReader(id);
+        return new ResponseEntity<>(activatedReader, HttpStatus.OK);
     }
 }
