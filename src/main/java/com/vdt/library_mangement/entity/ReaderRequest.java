@@ -46,9 +46,8 @@ public class ReaderRequest extends BaseEntity {
     @Column(name = "date_borrowed")
     private Date dateBorrowed;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "date_due")
-    private Date dateDue;
+    @Column(name = "borrowing_period")
+    private int borrowingPeriod;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "date_returned")

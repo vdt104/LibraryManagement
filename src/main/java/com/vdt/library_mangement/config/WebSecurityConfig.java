@@ -72,8 +72,20 @@ public class WebSecurityConfig {
                             .requestMatchers(POST,
                                     String.format("/%s/document_copies/**", apiPrefix)).hasRole(Role.LIBRARIAN)
 
+                            .requestMatchers(PUT,
+                                    String.format("/%s/document_copies/**", apiPrefix)).hasRole(Role.LIBRARIAN)
+
                             .requestMatchers(POST,
                                     String.format("/%s/reader_requests", apiPrefix)).hasAnyRole(Role.READER, Role.LIBRARIAN)
+
+                            .requestMatchers(GET,
+                                    String.format("/%s/reader_requests/**", apiPrefix)).hasAnyRole(Role.READER, Role.LIBRARIAN)
+
+                            .requestMatchers(PUT,
+                                    String.format("/%s/reader_requests/{id}/status", apiPrefix)).hasRole(Role.LIBRARIAN)
+                        
+                            .requestMatchers(PUT,
+                                    String.format("/%s/reader_requests/{id}/action=cancel", apiPrefix)).hasRole(Role.READER)
 
                             .requestMatchers(POST,
                                     String.format("/%s/librarians", apiPrefix)).hasRole(Role.ADMIN)

@@ -8,4 +8,6 @@ public interface DocumentCopyService {
     List<DocumentCopyDto> getAllDocumentCopiesOfDocument(String documentCode);
 
     DocumentCopyDto createDocumentCopy(String documentId, DocumentCopyDto documentCopyDto);
+
+    DocumentCopyDto updateDocumentCopy(String documentCode, DocumentCopyDto documentCopyDto);
 }

@@ -25,8 +25,9 @@ public class ReaderRequestDto {
     @JsonProperty("date_borrowed")
     private Date dateBorrowed;
 
-    @JsonProperty("date_due")
-    private Date dateDue;
+    @JsonProperty("borrowing_period")
+    @Min(value = 1, message = "Borrowing period must be greater than 0")
+    private int borrowingPeriod;
 
     @JsonProperty("date_returned")
     private Date dateReturned;

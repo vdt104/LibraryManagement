@@ -97,7 +97,7 @@ CREATE TABLE reader_request (
     user_id CHAR(36) NOT NULL,
     status ENUM('REQUESTED', 'ACCEPTED', 'REJECTED', 'BORROWED', 'RETURNED', 'OVERDUE', 'CANCELLED') NOT NULL,
     date_borrowed DATE,
-    date_due DATE,
+    borrowing_period INT,
     date_returned DATE,
     penalty_fee DOUBLE,
     notes TEXT,

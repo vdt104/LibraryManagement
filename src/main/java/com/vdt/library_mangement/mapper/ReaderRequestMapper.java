@@ -11,7 +11,7 @@ public class ReaderRequestMapper {
         readerRequestDto.setUserId(readerRequest.getReader().getUserId());
         readerRequestDto.setStatus(readerRequest.getStatus().name());
         readerRequestDto.setDateBorrowed(readerRequest.getDateBorrowed());
-        readerRequestDto.setDateDue(readerRequest.getDateDue());
+        readerRequestDto.setBorrowingPeriod(readerRequest.getBorrowingPeriod());
         readerRequestDto.setDateReturned(readerRequest.getDateReturned());
         readerRequestDto.setPenaltyFee(readerRequest.getPenaltyFee());
         readerRequestDto.setNotes(readerRequest.getNotes());
@@ -24,7 +24,7 @@ public class ReaderRequestMapper {
 
         readerRequest.setStatus(ReaderRequest.Status.valueOf(readerRequestDto.getStatus()));
         readerRequest.setDateBorrowed(readerRequestDto.getDateBorrowed());
-        readerRequest.setDateDue(readerRequestDto.getDateDue());
+        readerRequest.setBorrowingPeriod(readerRequestDto.getBorrowingPeriod());
         readerRequest.setDateReturned(readerRequestDto.getDateReturned());
         readerRequest.setPenaltyFee(readerRequestDto.getPenaltyFee());
         readerRequest.setNotes(readerRequestDto.getNotes());
