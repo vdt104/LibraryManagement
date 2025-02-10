@@ -3,13 +3,16 @@ package com.vdt.library_mangement.service.impl;
 import lombok.RequiredArgsConstructor;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.vdt.library_mangement.dto.ReaderDto;
+import com.vdt.library_mangement.entity.DocumentCopy;
 import com.vdt.library_mangement.entity.Reader;
 import com.vdt.library_mangement.entity.ReaderCard;
 import com.vdt.library_mangement.entity.Role;
@@ -17,6 +20,7 @@ import com.vdt.library_mangement.entity.User;
 import com.vdt.library_mangement.exception.EmailAlreadyExistsException;
 import com.vdt.library_mangement.exception.ResourceNotFoundException;
 import com.vdt.library_mangement.mapper.ReaderMapper;
+import com.vdt.library_mangement.repository.DocumentCopyRepository;
 import com.vdt.library_mangement.repository.ReaderCardRepository;
 import com.vdt.library_mangement.repository.ReaderRepository;
 import com.vdt.library_mangement.repository.UserRepository;
@@ -33,8 +37,30 @@ public class ReaderServiceImpl implements ReaderService {
 
     private final ReaderCardRepository readerCardRepository;
 
+    private final DocumentCopyRepository documentCopyRepository;
+
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @Override
+    public ReaderDto getReaderById(String userId) {
+        Reader reader = readerRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("Reader", "id", userId));
+
+        return ReaderMapper.toDTO(reader);
+    }
+
+    @Override
+    public List<ReaderDto> getAllReaders() {
+        List<Reader> readers = readerRepository.findAll();
+
+        List<ReaderDto> readerDtos = new ArrayList<>();
+
+        for (Reader reader : readers) {
+            readerDtos.add(ReaderMapper.toDTO(reader));
+        }
+
+        return readerDtos;        
+    }
 
     @Override
     public ReaderDto createReader(ReaderDto readerDto, int expiryPeriod) {
@@ -99,52 +125,6 @@ public class ReaderServiceImpl implements ReaderService {
         return ReaderMapper.toDTO(updatedReader);
     }
 
-    // @Override
-    // public ReaderDto changeReaderStatus(String userId, boolean isActive) {
-    //     Reader existingReader = readerRepository.findById(userId)
-    //         .orElseThrow(() -> new ResourceNotFoundException("Reader", "id", userId));
-
-    //     User user = existingReader.getUser();
-    //     user.setActive(isActive);
-
-    //     if (isActive) {
-
-    //         // Cập nhật ReaderCard
-    //         ReaderCard readerCard = existingReader.getReaderCard();
-
-    //         if (readerCard.getCreatedAt().equals(readerCard.getUpdatedAt())) {
-    //             // Tạo mã PIN 6 số ngẫu nhiên
-    //             String pin = generateRandomPin();
-    //             System.out.println("Generated PIN: " + pin);
-    //             String encodedPin = passwordEncoder.encode(pin);
-
-    //             String password = generateRandomPassword();
-    //             System.out.println("Generated password: " + password);
-    //             String encodedPassword = passwordEncoder.encode(password);
-
-    //             user.setPassword(encodedPassword);
-
-    //             readerCard.setPin(encodedPin);
-    //             readerCard.setIssueDate(new Date());
-    //         }
-    //         readerCard.setIssueDate(new Date());
-    //         readerCard.setStatus(ReaderCard.Status.ACTIVE);
-
-    //         existingReader.setReaderCard(readerCard);
-    //     } else {
-    //         ReaderCard readerCard = existingReader.getReaderCard();
-            
-    //         readerCard.setStatus(ReaderCard.Status.INACTIVE);
-    //         existingReader.setReaderCard(readerCard);
-    //     }
-
-    //     existingReader.setUser(user);
-
-    //     Reader updatedReader = readerRepository.save(existingReader);
-
-    //     return ReaderMapper.toDTO(updatedReader);
-    // }
-
     @Override
     public UserResponse activateReader(String userId) {
         Reader existingReader = readerRepository.findById(userId)
@@ -195,13 +175,35 @@ public class ReaderServiceImpl implements ReaderService {
             .orElseThrow(() -> new ResourceNotFoundException("Reader", "id", userId));
 
         ReaderCard readerCard = existingReader.getReaderCard();
+
+        User user = existingReader.getUser();
+        user.setActive(false);
         
         readerCard.setStatus(ReaderCard.Status.INACTIVE);
         existingReader.setReaderCard(readerCard);
 
+        existingReader.setUser(user);
+
         Reader updatedReader = readerRepository.save(existingReader);
 
         return ReaderMapper.toDTO(updatedReader);
+    }
+
+    @Override
+    public void addDocumentToBookshelf(String userId, String documentCopyCode) throws Exception {
+        Reader existingReader = readerRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("Reader", "id", userId));
+
+        DocumentCopy documentCopy = documentCopyRepository.findByDocumentCopyCode(documentCopyCode)
+            .orElseThrow(() -> new ResourceNotFoundException("Document copy", "code", documentCopyCode));
+
+        if (documentCopy.getStatus() != DocumentCopy.Status.AVAILABLE) {
+            throw new Exception("Document copy is not available");
+        }
+
+        existingReader.getDocumentCopies().add(documentCopy);
+
+        readerRepository.save(existingReader);
     }
 
     private String generateRandomPin() {

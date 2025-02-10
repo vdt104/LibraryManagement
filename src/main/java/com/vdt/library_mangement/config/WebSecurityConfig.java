@@ -40,7 +40,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(requests -> {
                     requests
                             .requestMatchers(POST,
-                                    String.format("/%s/readers", apiPrefix),
+                                    String.format("/%s/readers**", apiPrefix),
                                     String.format("/%s/users/login", apiPrefix)
                             )
                             .permitAll()
@@ -48,14 +48,20 @@ public class WebSecurityConfig {
                             // .requestMatchers(GET,
                             //         String.format("%s/categories**", apiPrefix)).permitAll()
 
+                            .requestMatchers(GET,
+                                    String.format("/%s/readers/{id}", apiPrefix)).hasAnyRole(Role.READER, Role.LIBRARIAN)
+                        
+                            .requestMatchers(GET,
+                                    String.format("/%s/readers", apiPrefix)).hasRole(Role.LIBRARIAN)
+
                             .requestMatchers(PUT,
                                     String.format("/%s/readers/{id}", apiPrefix)).hasAnyRole(Role.READER, Role.LIBRARIAN)
 
                             .requestMatchers(PUT,
-                                    String.format("/%s/readers/{id}/activate", apiPrefix)).hasRole(Role.LIBRARIAN)
-                        
-                            .requestMatchers(PUT,
-                                    String.format("/%s/readers/{id}/deactivate", apiPrefix)).hasRole(Role.LIBRARIAN)
+                                    String.format("/%s/readers/{id}/is_active", apiPrefix)).hasRole(Role.LIBRARIAN)
+
+                            .requestMatchers(POST,
+                                    String.format("/%s/readers/{id}/bookshelf", apiPrefix)).hasRole(Role.LIBRARIAN)
 
                             // .requestMatchers(DELETE,
                             //         String.format("%s/categories/**", apiPrefix)).hasAnyRole(Role.ADMIN)

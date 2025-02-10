@@ -14,7 +14,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("${api.prefix}/controllers")
+@RequestMapping("${api.prefix}/reader_requests")
 @RequiredArgsConstructor
 public class ReaderRequestController {
     private final ReaderRequestService readerRequestService;
