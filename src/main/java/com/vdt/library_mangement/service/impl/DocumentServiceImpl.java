@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import com.vdt.library_mangement.dto.DocumentDto;
@@ -12,6 +14,7 @@ import com.vdt.library_mangement.entity.Author;
 import com.vdt.library_mangement.entity.Category;
 import com.vdt.library_mangement.entity.Document;
 import com.vdt.library_mangement.exception.DocumentCodeAlreadyExistsException;
+import com.vdt.library_mangement.exception.ResourceNotFoundException;
 import com.vdt.library_mangement.mapper.DocumentMapper;
 import com.vdt.library_mangement.repository.AuthorRepository;
 import com.vdt.library_mangement.repository.CategoryRepository;
@@ -26,6 +29,20 @@ public class DocumentServiceImpl implements DocumentService {
     private final DocumentRepository documentRepository;
     private final AuthorRepository authorRepository;
     private final CategoryRepository categoryRepository;
+
+    @Override
+    public DocumentDto getDocumentById(String id) {
+        Document document = documentRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Document", "id", id));
+
+        return DocumentMapper.toDTO(document);
+    }
+
+    @Override
+    public Page<DocumentDto> getAllDocuments(PageRequest pageRequest) {
+        return documentRepository.findAll(pageRequest)
+            .map(DocumentMapper::toDTO);
+    }
 
     @Override
     public DocumentDto createDocument(DocumentDto documentDto) {
