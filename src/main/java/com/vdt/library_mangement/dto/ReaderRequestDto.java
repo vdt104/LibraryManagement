@@ -1,6 +1,7 @@
 package com.vdt.library_mangement.dto;
 
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -35,4 +36,7 @@ public class ReaderRequestDto {
     private Double penaltyFee;
 
     private String notes;
+
+    @JsonProperty("document_copies")
+    private List<DocumentCopyDto> documentCopies;
 }

@@ -46,6 +46,12 @@ public class WebSecurityConfig {
                             .permitAll()
 
                             .requestMatchers(GET,
+                                    String.format("/%s/document_copies/**", apiPrefix),
+                                    String.format("/%s/documents/**", apiPrefix)
+                            )
+                            .permitAll()
+
+                            .requestMatchers(GET,
                                     String.format("/%s/readers/{id}", apiPrefix)).hasAnyRole(Role.READER, Role.LIBRARIAN)
                         
                             .requestMatchers(GET,
@@ -60,14 +66,14 @@ public class WebSecurityConfig {
                             .requestMatchers(POST,
                                     String.format("/%s/readers/{id}/bookshelf", apiPrefix)).hasRole(Role.LIBRARIAN)
 
-                            .requestMatchers(GET,
-                                    String.format("/%s/documents/**", apiPrefix)).permitAll()
-
                             .requestMatchers(POST,
                                     String.format("/%s/documents/**", apiPrefix)).hasRole(Role.LIBRARIAN)
 
                             .requestMatchers(POST,
                                     String.format("/%s/document_copies/**", apiPrefix)).hasRole(Role.LIBRARIAN)
+
+                            .requestMatchers(POST,
+                                    String.format("/%s/reader_requests", apiPrefix)).hasAnyRole(Role.READER, Role.LIBRARIAN)
 
                             .requestMatchers(POST,
                                     String.format("/%s/librarians", apiPrefix)).hasRole(Role.ADMIN)

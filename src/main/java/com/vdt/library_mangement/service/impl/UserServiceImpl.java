@@ -39,6 +39,10 @@ public class UserServiceImpl implements UserService {
 
         }
 
+        if(existingUser.isActive() == false) {
+            throw new Exception("User's account is not activated");
+        }
+
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password)
         );

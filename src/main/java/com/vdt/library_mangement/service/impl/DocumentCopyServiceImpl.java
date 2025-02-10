@@ -3,12 +3,14 @@ package com.vdt.library_mangement.service.impl;
 import com.vdt.library_mangement.dto.DocumentCopyDto;
 import com.vdt.library_mangement.entity.Document;
 import com.vdt.library_mangement.entity.DocumentCopy;
+import com.vdt.library_mangement.exception.ResourceNotFoundException;
 import com.vdt.library_mangement.repository.DocumentCopyRepository;
 import com.vdt.library_mangement.repository.DocumentRepository;
 import com.vdt.library_mangement.service.DocumentCopyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,6 +19,32 @@ public class DocumentCopyServiceImpl implements DocumentCopyService {
 
     private final DocumentRepository documentRepository;
     private final DocumentCopyRepository documentCopyRepository;
+
+    @Override
+    public List<DocumentCopyDto> getAllDocumentCopiesOfDocument(String documentCode) {
+        // Kiểm tra xem documentId có tồn tại hay không
+        Optional<Document> documentOptional = documentRepository.findByDocumentCode(documentCode);
+        if (!documentOptional.isPresent()) {
+            throw new ResourceNotFoundException("Document Code", "document_code", documentCode);
+        }
+
+        Document document = documentOptional.get();
+
+        // Lấy ra tất cả DocumentCopy của Document
+        List<DocumentCopy> documentCopies = documentCopyRepository.findByDocument(document);
+
+        // Chuyển đổi DocumentCopy sang DocumentCopyDto
+        return documentCopies.stream()
+            .map(documentCopy -> {
+                DocumentCopyDto documentCopyDto = new DocumentCopyDto();
+                documentCopyDto.setCode(documentCopy.getDocumentCopyCode());
+                documentCopyDto.setDocumentId(documentCode);
+                documentCopyDto.setLocation(documentCopy.getLocation());
+                documentCopyDto.setStatus(documentCopy.getStatus().name());
+                return documentCopyDto;
+            })
+            .toList();
+    }
 
     @Override
     public DocumentCopyDto createDocumentCopy(String documentId, DocumentCopyDto documentCopyDto) {

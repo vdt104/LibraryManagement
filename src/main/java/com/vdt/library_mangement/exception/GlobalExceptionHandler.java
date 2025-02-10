@@ -27,7 +27,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now(),
                 exception.getMessage(),
                 webRequest.getDescription(false),
-                "USER_NOT_FOUND"
+                "RESOURCE_NOT_FOUND"
         );
 
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
@@ -54,6 +54,32 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 exception.getMessage(),
                 webRequest.getDescription(false),
                 "DOCUMENT_CODE_ALREADY_EXISTS"
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DocumentCopyNotAvailableException.class)
+    public ResponseEntity<ErrorDetails> handleDocumentCopyNotAvailableException(DocumentCopyNotAvailableException exception,
+                                                                                WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                "DOCUMENT_COPY_IS_NOT_AVAILABLE"
+        );
+
+        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ReaderCardNotActiveException.class)
+    public ResponseEntity<ErrorDetails> handleReaderCardNotActiveException(ReaderCardNotActiveException exception,
+                                                                          WebRequest webRequest) {
+        ErrorDetails errorDetails = new ErrorDetails(
+                LocalDateTime.now(),
+                exception.getMessage(),
+                webRequest.getDescription(false),
+                "READER_CARD_IS_NOT_ACTIVE"
         );
 
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
